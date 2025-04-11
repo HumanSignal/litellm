@@ -131,26 +131,11 @@ class VertexBase:
         """
         if custom_llm_provider == "gemini":
             return "", ""
-
-        self._credentials, cred_project_id = self.load_auth(
-            credentials=credentials, project_id=project_id
-        )
-        if not self.project_id:
-            self.project_id = project_id or cred_project_id
-
-        if self._credentials.expired or not self._credentials.token:
-            self.refresh_auth(self._credentials)
-
-        if not self.project_id:
-            self.project_id = self._credentials.quota_project_id
-
-        if not self.project_id:
-            raise ValueError("Could not resolve project_id")
-
-        if not self._credentials or not self._credentials.token:
-            raise RuntimeError("Could not resolve API token from the environment")
-
-        return self._credentials.token, project_id or self.project_id
+        else:
+            return self.get_access_token(
+                credentials=credentials,
+                project_id=project_id,
+            )
 
     def is_using_v1beta1_features(self, optional_params: dict) -> bool:
         """
@@ -314,7 +299,7 @@ class VertexBase:
                     )
                 )
 
-            self._credentials_project_mapping[credential_cache_key] = _credentials
+            # self._credentials_project_mapping[credential_cache_key] = _credentials
 
         ## VALIDATE CREDENTIALS
         verbose_logger.debug(f"Validating credentials for project_id: {project_id}")
