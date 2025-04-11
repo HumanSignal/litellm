@@ -299,7 +299,7 @@ class VertexBase:
                     )
                 )
 
-            self._credentials_project_mapping[credential_cache_key] = _credentials
+            # self._credentials_project_mapping[credential_cache_key] = _credentials
 
         ## VALIDATE CREDENTIALS
         verbose_logger.debug(f"Validating credentials for project_id: {project_id}")
