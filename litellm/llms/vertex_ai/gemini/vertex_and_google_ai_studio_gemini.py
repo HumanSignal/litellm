@@ -207,7 +207,7 @@ class VertexGeminiConfig(VertexAIBaseConfig, BaseConfig):
             "extra_headers",
             "seed",
             "logprobs",
-            "top_logprobs",  # Added this to list of supported openAI params
+            "top_logprobs",
             "modalities",
         ]
 
@@ -313,9 +313,10 @@ class VertexGeminiConfig(VertexAIBaseConfig, BaseConfig):
         if isinstance(old_schema, list):
             for item in old_schema:
                 if isinstance(item, dict):
-                    item = _build_vertex_schema(parameters=item)
+                    item = _build_vertex_schema(parameters=item, add_property_ordering=True)
+
         elif isinstance(old_schema, dict):
-            old_schema = _build_vertex_schema(parameters=old_schema)
+            old_schema = _build_vertex_schema(parameters=old_schema, add_property_ordering=True)
         return old_schema
 
     def apply_response_schema_transformation(self, value: dict, optional_params: dict):
@@ -748,9 +749,6 @@ class VertexGeminiConfig(VertexAIBaseConfig, BaseConfig):
                 chat_completion_logprobs = self._transform_logprobs(
                     logprobs_result=candidate["logprobsResult"]
                 )
-            # Handle avgLogprobs for Gemini Flash 2.0
-            elif "avgLogprobs" in candidate:
-                chat_completion_logprobs = candidate["avgLogprobs"]
 
             if tools:
                 chat_completion_message["tool_calls"] = tools
